@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>기차표 예약</h1>
+
+    <h2>출발역</h2>
+    <div>
+        <input type="radio" name="group-1" checked value="서울"/><label>서울</label>
+        <input type="radio" name="group-1" value="천안"/><label>천안</label>
+        <input type="radio" name="group-1" value="세종"/><label>세종</label>
+        <input type="radio" name="group-1" value="익산"/><label>익산</label>
+    </div>
+    
+
+    <h2>도착역</h2>
+    <div>
+        <select>
+            <option>광주</option>
+            <option>목포</option>
+            <option>여수</option>
+           
+        </select>
+    </div>
+    
+    <button id="btn-train">제출</button>
+    <p id="txt-result">결과: </p>
+    
+    <script>
+        var btnTrain =document.getElementById("btn-train")
+        var txtResult =document.getElementById("txt-result")
+        btnTrain.addEventListener('click', ()=> {
+            var selectobj = document.querySelector("input[name='group-1']:checked")
+            var arrival = document.querySelector("select").value
+            txtResult.innerText = selectobj.value + " -> " + arrival
+            
+        })
+    </script>
+</body>
+</html>
