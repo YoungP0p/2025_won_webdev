@@ -1,11 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <title>7주차 코드</title>
+  <style>
+    h2 {
+      color: yellow;
+      background-color: blue;
+    }
+  </style>
 </head>
 <body>
-    d
+  <h1>Hello Html</h1>
+  <h1 id="style-1">Hello Html</h1>
+  <h1 class="style-2">Hello Html</h1>
+  <h2>Hello Html</h2>
+
+  <input type="range" id="inpVolume" min="0" max="100" value="50" />
+  <span id="volumeTxt">volue: 50 % OK</span>
+
+  <div>
+    <textarea id="multi" rows="4" cols="40" placeholder="입력해주세요"></textarea>
+  </div>
+
+  <div>
+    <input type="date" id="inpDate" />
+  </div>
+
+  <script>
+    const inpVolume = document.getElementById('inpVolume');
+    const volumeTxt = document.getElementById('volumeTxt');
+    inpVolume.addEventListener('change', ()=> {
+      console.log('changed :' + inpVolume.value);
+      volumeTxt.innerText = `volue: ${inpVolume.value} % OK`;
+    });
+
+    const inpDate = document.getElementById('inpDate');
+    inpDate.addEventListener('change', (evt)=> {
+      console.log(evt);
+    });
+  </script>
 </body>
 </html>
