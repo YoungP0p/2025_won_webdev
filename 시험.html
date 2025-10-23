@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카운터</title>
+    <style>
+        #style-1 {
+            color: antiquewhite;
+            background-color: black;
+            font-size: 50px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: 8000;
+        }
+        body {
+            color: antiquewhite;
+            background-color: blue;
+            margin: 0px;
+            padding: 0px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 500;
+            font-style:inherit
+        }
+        
+    </style>
+</head>
+<body>
+    <h1 id="style-1">카운터</h1>
+
+    <h2 id="count-text">숫자집계를 하시려면 아래 버튼을 눌러주세요</h2>
+    <button id="btn-inc">Inc(+)</button>
+    <button id="btn-dec">Dec(-)</button>
+    <button id="btn-reset">Reset(0)</button>
+
+    <p><span>Inc(+)는 1씩 증가</span></p>
+    <p><span>Dec(-)는 1씩 감소</span></p>
+    <p><span>Reset(0)은 0으로 초기화됩니다</span></p>
+
+
+
+
+
+    <p><span>중간고사 과제 Made by 박주영.20240294</span></p>
+             
+
+    <script>
+        var countText = document.getElementById("count-text")
+        var btnInc= document.getElementById("btn-inc")
+        var btnDec= document.getElementById("btn-dec")
+        var btnReset= document.getElementById("btn-reset")
+        var count = 0;
+
+        btnInc.addEventListener("click", ()=>{
+            count=count+1
+            console.log(count)
+            countText.innerText = "  카운터 : " + count
+        })
+
+        btnDec.addEventListener("click", ()=>{
+            count=count-1
+            console.log(count)
+            countText.innerText = "카운터 : " + count
+        })
+
+        btnReset.addEventListener("click", ()=>{
+            count=0
+            console.log(count)
+            countText.innerText = "  카운터 : " + count
+        })
+    </script>
+    
+</body>
+</html>
