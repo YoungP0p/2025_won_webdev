@@ -1,0 +1,33 @@
+body {
+    background-color: #222;
+    color: white;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+header {
+    padding: 12px;
+    font-size: 18px;
+}
+
+main {
+    padding: 20px;
+}
+
+.title-txt {
+    font-size: 64px;
+    margin-bottom: 40px;
+}
+
+.menu-item {
+    font-size: 32px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border: 1px solid #444;
+}
+
+/* 선택된 항목 강조 */
+.menu-item.select {
+    background-color: darkorange;
+}
