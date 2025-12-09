@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>오늘 공부 관리 대시보드 - 박주영</title>
+  <style>
+    :root {
+      --bg-body: #f3f4f6;
+      --bg-dashboard: #ffffff;
+      --bg-panel: #f9fafb;
+      --border-panel: #e5e7eb;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #e0ecff;
+      --record-bg: #ffffff;
+      --record-border: #e5e7eb;
+    }
+
+    body.dark {
+      --bg-body: #020617;
+      --bg-dashboard: #020617;
+      --bg-panel: #020617;
+      --border-panel: #1f2937;
+      --text-main: #e5e7eb;
+      --text-sub: #9ca3af;
+      --accent: #38bdf8;
+      --accent-soft: #0f172a;
+      --record-bg: #020617;
+      --record-border: #1f2937;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .dashboard {
+      background: var(--bg-dashboard);
+      width: 960px;
+      max-width: 100%;
+      border-radius: 16px;
+      padding: 20px 28px 24px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 12px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border-radius: 12px;
+      padding: 18px 18px 16px;
+      border: 1px solid var(--border-panel);
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    /* 공통 버튼 */
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 13px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: transform 0.08s ease, background-color 0.08s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border-panel);
+      color: var(--text-sub);
+    }
+    .btn-ghost:hover {
+      background: rgba(148, 163, 184, 0.1);
+    }
+
+    .btn-soft {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    body.dark .btn-soft {
+      background: #111827;
+      color: #e5e7eb;
+    }
+    .btn-soft:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-warning {
+      background: #f97316;
+      color: #ffffff;
+    }
+    .btn-warning:hover {
+      transform: translateY(-1px);
+    }
+
+    /* 할 일 영역 */
+    .todo-input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .todo-input-row input {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-panel);
+      font-size: 13px;
+      background: var(--bg-dashboard);
+      color: var(--text-main);
+    }
+
+    .todo-list {
+      max-height: 180px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      padding-right: 4px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-dashboard);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-panel);
+      font-size: 13px;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .todo-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .todo-item input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .todo-text {
+      flex: 1;
+      word-break: break-all;
+    }
+
+    .todo-text.completed {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+
+    .todo-delete {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    .progress-wrap {
+      margin-top: 4px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    body.dark .progress-bar {
+      background: #111827;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #6366f1);
+      transition: width 0.2s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    /* 타이머 */
+    .timer-display {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin: 6px 0 14px;
+      letter-spacing: 3px;
+    }
+
+    .timer-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .timer-summary {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    /* 실시간 환산 */
+    .macro-box {
+      margin-top: 4px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(129, 140, 248, 0.4);
+      font-size: 12px;
+    }
+
+    .macro-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .macro-list {
+      padding-left: 18px;
+      color: var(--text-sub);
+    }
+
+    .macro-list li {
+      margin-bottom: 2px;
+    }
+
+    /* 기록 카드 디자인 개선 */
+    .record-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 10px 0 6px;
+    }
+
+    .record-list {
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 4px;
+      font-size: 12px;
+    }
+
+    .record-item {
+      background: var(--record-bg);
+      border-radius: 10px;
+      border: 1px solid var(--record-border);
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      line-height: 1.45;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .record-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, #38bdf8, #6366f1);
+    }
+
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+
+    .record-label {
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .record-time {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .record-body {
+      font-size: 12px;
+      color: var(--text-main);
+      margin-left: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 인쇄(PDF 저장)용 스타일 */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0;
+      }
+      .dashboard {
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .top-actions,
+      .timer-buttons {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+    <div class="header-row">
+      <div class="title">오늘 공부 관리 대시보드 - 박주영</div>
+      <div class="top-actions">
+        <button class="btn btn-ghost" id="theme-toggle">다크모드</button>
+        <button class="btn btn-soft" id="pdf-btn">PDF로 저장</button>
+      </div>
+    </div>
+    <div class="subtitle">
+      할 일을 직접 입력하고, 타이머로 공부 시간을 기록해 오늘 하루를 관리해보세요.
+    </div>
+
+    <div class="grid">
+      <!-- 왼쪽 : 할 일 -->
+      <div class="panel">
+        <div class="panel-title">오늘의 할 일</div>
+
+        <div class="todo-input-row">
+          <input type="text" id="todo-input" placeholder="과제를 입력하세요." />
+          <button class="btn btn-primary" id="add-todo-btn">추가</button>
+        </div>
+
+        <div class="todo-list" id="todo-list"></div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar">
+            <div class="progress-bar-inner" id="progress-inner"></div>
+          </div>
+          <div class="progress-text" id="progress-text">
+            오늘 할 일 완료율은 0% 입니다.
+          </div>
+        </div>
+      </div>
+
+      <!-- 오른쪽 : 타이머 + 환산 + 기록 -->
+      <div class="panel">
+        <div class="panel-title">공부 시간 타이머</div>
+
+        <div class="timer-display" id="timer-display">00:00:00</div>
+
+        <div class="timer-buttons">
+          <button class="btn btn-primary" id="start-btn">시작</button>
+          <button class="btn btn-warning" id="pause-btn">일시정지</button>
+          <button class="btn btn-soft" id="reset-btn">리셋</button>
+          <button class="btn btn-ghost" id="save-btn">기록 저장</button>
+        </div>
+
+        <div class="timer-summary" id="timer-summary">
+          지금까지 누적 공부 시간은 0분 입니다.
+        </div>
+
+        <div class="macro-box">
+          <div class="macro-title">현재 시간 환산</div>
+          <ul class="macro-list">
+            <li>라면 <span id="macro-ramen">0</span>개 끓일 수 있는 시간</li>
+            <li>3분 카레 <span id="macro-curry">0</span>번 만들 수 있는 시간</li>
+            <li>연애 0번 할 수 있는 시간</li>
+            <li>시급 기준 약 <span id="macro-money">0</span>원</li>
+          </ul>
+        </div>
+
+        <div class="record-title">오늘 공부 기록</div>
+        <div class="record-list" id="record-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== 다크모드 토글 ===== */
+    const themeToggleBtn = document.getElementById("theme-toggle");
+    function applyTheme(theme) {
+      if (theme === "dark") {
+        document.body.classList.add("dark");
+        themeToggleBtn.textContent = "라이트모드";
+      } else {
+        document.body.classList.remove("dark");
+        themeToggleBtn.textContent = "다크모드";
+      }
+    }
+    const savedTheme = localStorage.getItem("dashboard-theme") || "light";
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener("click", () => {
+      const current = document.body.classList.contains("dark") ? "dark" : "light";
+      const next = current === "dark" ? "light" : "dark";
+      localStorage.setItem("dashboard-theme", next);
+      applyTheme(next);
+    });
+
+    /* ===== PDF 저장 (인쇄) ===== */
+    document.getElementById("pdf-btn").addEventListener("click", () => {
+      window.print(); // 브라우저 인쇄 → 대상 프린터를 "PDF로 저장" 선택
+    });
+
+    /* ===== 할 일 기능 ===== */
+    const todoInput = document.getElementById("todo-input");
+    const todoList = document.getElementById("todo-list");
+    const progressInner = document.getElementById("progress-inner");
+    const progressText = document.getElementById("progress-text");
+
+    document.getElementById("add-todo-btn").onclick = addTodo;
+    todoInput.addEventListener("keydown", e => { if (e.key === "Enter") addTodo(); });
+
+    function addTodo() {
+      const text = todoInput.value.trim();
+      if (!text) return;
+
+      const item = document.createElement("div");
+      item.className = "todo-item";
+
+      item.innerHTML = `
+        <div class="todo-item-left">
+          <input type="checkbox" class="todo-check">
+          <span class="todo-text">${text}</span>
+        </div>
+        <button class="btn btn-ghost todo-delete">삭제</button>
+      `;
+
+      item.querySelector(".todo-check").addEventListener("change", updateProgress);
+      item.querySelector(".todo-delete").addEventListener("click", () => {
+        item.remove();
+        updateProgress();
+      });
+
+      todoList.appendChild(item);
+      todoInput.value = "";
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const items = todoList.querySelectorAll(".todo-item");
+      const total = items.length;
+      let completed = 0;
+
+      items.forEach(it => {
+        if (it.querySelector(".todo-check").checked) completed++;
+      });
+
+      const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+      progressInner.style.width = percent + "%";
+      progressText.textContent = `오늘 할 일 완료율은 ${percent}% 입니다.`;
+    }
+
+    /* ===== 타이머 + 실시간 환산 ===== */
+    let elapsedSeconds = 0;
+    let timerInterval = null;
+    let running = false;
+
+    const timerDisplay = document.getElementById("timer-display");
+    const timerSummary = document.getElementById("timer-summary");
+    const macroRamen = document.getElementById("macro-ramen");
+    const macroCurry = document.getElementById("macro-curry");
+    const macroMoney = document.getElementById("macro-money");
+
+    document.getElementById("start-btn").onclick = () => {
+      if (running) return;
+      running = true;
+      timerInterval = setInterval(() => {
+        elapsedSeconds++;
+        updateTimer();
+        updateMacros();
+      }, 1000);
+    };
+
+    document.getElementById("pause-btn").onclick = () => {
+      running = false;
+      clearInterval(timerInterval);
+    };
+
+    document.getElementById("reset-btn").onclick = () => {
+      running = false;
+      clearInterval(timerInterval);
+      elapsedSeconds = 0;
+      updateTimer();
+      updateMacros();
+    };
+    function updateTimer() {
+      const h = String(Math.floor(elapsedSeconds / 3600)).padStart(2, "0");
+      const m = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, "0");
+      const s = String(elapsedSeconds % 60).padStart(2, "0");
+      timerDisplay.textContent = `${h}:${m}:${s}`;
+
+      const minutes = Math.floor(elapsedSeconds / 60);
+      timerSummary.textContent = `지금까지 누적 공부 시간은 ${minutes}분 입니다.`;
+    }
+
+    function updateMacros() {
+      const minutes = elapsedSeconds / 60;
+      macroRamen.textContent = Math.floor(minutes / 4);
+      macroCurry.textContent = Math.floor(minutes / 3);
+      macroMoney.textContent = Math.floor((elapsedSeconds / 3600) * 10000).toLocaleString();
+    }
+
+    /* ===== 공부 기록 (완료 과제만, 디자인 개선) ===== */
+    let recordCount = 0;
+    const recordList = document.getElementById("record-list");
+
+    document.getElementById("save-btn").onclick = () => {
+      recordCount++;
+
+      const completedTasks = [];  
+      todoList.querySelectorAll(".todo-item").forEach(item => {
+        if (item.querySelector(".todo-check").checked) {
+          completedTasks.push(item.querySelector(".todo-text").textContent.trim());
+        }
+      });
+
+      const record = document.createElement("div");
+      record.className = "record-item";
+
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+
+      const header = document.createElement("div");
+      header.className = "record-header";
+
+      const label = document.createElement("div");
+      label.className = "record-label";
+      label.textContent = `기록 ${recordCount}`;
+
+      const timeInfo = document.createElement("div");
+      timeInfo.className = "record-time";
+      timeInfo.textContent = `기록 시각: ${hh}:${mm}`;
+
+      header.appendChild(label);
+      header.appendChild(timeInfo);
+
+      const body = document.createElement("div");
+      body.className = "record-body";
+      body.textContent =
+        completedTasks.length > 0
+          ? "완료한 과제: " + completedTasks.join(", ")
+          : "완료한 과제가 없습니다.";
+
+      record.appendChild(header);
+      record.appendChild(body);
+
+      recordList.prepend(record);
+    };
+  </script>
+</body>
+</html>
